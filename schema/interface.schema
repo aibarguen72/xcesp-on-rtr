@@ -1,0 +1,9 @@
+# XCESP-ON-RTR — Ethernet/IP/VLAN interface node schema
+
+node interface
+  attr name        string      required
+  attr ipv4        ipaddress   optional
+  attr prefix-len  integer     optional   default=24
+  attr vlan        integer     optional
+  attr shutdown    bool        optional   default=false
+!

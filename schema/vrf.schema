@@ -1,0 +1,7 @@
+# XCESP-ON-RTR — VRF / network namespace node schema
+
+node vrf
+  attr name         string   required
+  attr description  string   optional
+  attr namespace    string   optional
+!

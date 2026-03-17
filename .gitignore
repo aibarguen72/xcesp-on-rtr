@@ -1,0 +1,11 @@
+# Build artifacts
+/build/
+/lib/
+
+# Object and binary files
+*.o
+*.a
+*.d
+
+# Claude Code internal
+.claude/

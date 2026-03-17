@@ -1,0 +1,9 @@
+# XCESP-ON-RTR — Static route node schema
+
+node route
+  attr name        string      required
+  attr prefix      string      required
+  attr nexthop     ipaddress   required
+  attr metric      integer     optional   default=1
+  attr vrf         string      optional
+!

@@ -1,0 +1,6 @@
+# Changelog - xcesp-on-rtr
+
+## 0.0.1
+
+- Initial skeleton: project structure, schema stubs (interface/route/vrf),
+  empty rule scripts, makefile, and registration stub (no ProcObjects yet)

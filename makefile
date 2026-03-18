@@ -4,7 +4,7 @@
 include PROJECT
 
 CXX      := g++
-XCESPPROC := ../../xcespproc
+XCESPPROC := ../xcespproc
 CXXFLAGS := -std=c++17 -Wall -Wextra -MMD -MP \
             -I $(XCESPPROC)/src \
             -I $(XCESPPROC)/include \
@@ -15,7 +15,10 @@ BUILDDIR := build
 LIBDIR   := lib
 TARGET   := $(LIBDIR)/libon-rtr.a
 
-SRCS     := $(wildcard $(SRCDIR)/*.cpp)
+# Override CXXFLAGS to include own source directories (must come after SRCDIR)
+CXXFLAGS += -I $(SRCDIR) -I $(SRCDIR)/objects
+
+SRCS     := $(wildcard $(SRCDIR)/*.cpp) $(wildcard $(SRCDIR)/objects/*.cpp)
 OBJS     := $(patsubst $(SRCDIR)/%.cpp,$(BUILDDIR)/%.o,$(SRCS))
 DEPS     := $(OBJS:.o=.d)
 -include $(DEPS)
@@ -27,10 +30,18 @@ all: $(TARGET)
 $(TARGET): $(OBJS) | $(LIBDIR)
 	ar rcs $@ $(OBJS)
 
+# src/*.cpp → build/%.o
 $(BUILDDIR)/%.o: $(SRCDIR)/%.cpp | $(BUILDDIR)
 	$(CXX) $(CXXFLAGS) -c -o $@ $<
 
+# src/objects/*.cpp → build/objects/%.o
+$(BUILDDIR)/objects/%.o: $(SRCDIR)/objects/%.cpp | $(BUILDDIR)/objects
+	$(CXX) $(CXXFLAGS) -c -o $@ $<
+
 $(LIBDIR) $(BUILDDIR):
+	mkdir -p $@
+
+$(BUILDDIR)/objects:
 	mkdir -p $@
 
 install: all

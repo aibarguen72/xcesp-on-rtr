@@ -1,9 +1,13 @@
-# XCESP-ON-RTR — Ethernet/IP/VLAN interface node schema
+# XCESP-ON-RTR — interface node (physical/logical network device)
+#
+# Maps to an existing Linux network device.  The device must already
+# exist (hardware NIC or software device); it cannot be created.
+# "shutdown" controls administrative link state (up/down).
+# Multiple IP addresses are expressed as child "address" nodes.
 
 node interface
-  attr name        string      required
-  attr ipv4        ipaddress   optional
-  attr prefix-len  integer     optional   default=24
-  attr vlan        integer     optional
-  attr shutdown    bool        optional   default=false
+  attr name      string   required
+  attr device    string   required
+  attr shutdown  bool     optional   default=false
+  child address  optional multi=true
 !

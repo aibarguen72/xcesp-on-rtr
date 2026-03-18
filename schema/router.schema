@@ -1,0 +1,11 @@
+# XCESP-ON-RTR — router node (Linux network namespace)
+#
+# "router default" uses the host network namespace.
+# Any other name creates/manages a dedicated network namespace.
+
+node router
+  attr name      string   required
+  attr affinity  integer  optional
+  attr shutdown  bool     optional   default=false
+  child vrf      optional multi=true
+!

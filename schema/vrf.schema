@@ -1,7 +1,14 @@
-# XCESP-ON-RTR — VRF / network namespace node schema
+# XCESP-ON-RTR — vrf node (Linux VRF device + routing table)
+#
+# "vrf default" uses the default routing table (no VRF device).
+# Any other name creates/manages a Linux VRF device with its own table.
+# "table" is optional; if omitted the object auto-assigns one.
 
 node vrf
-  attr name         string   required
-  attr description  string   optional
-  attr namespace    string   optional
+  attr name          string    required
+  attr table         table-id  optional
+  attr shutdown      bool      optional   default=false
+  child interface    optional  multi=true
+  child vlan         optional  multi=true
+  child static-route optional  multi=true
 !

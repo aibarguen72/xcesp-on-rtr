@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """
-status-to-global/vrf.py — XCESP-ON-RTR
-Maps RtrVrf object status to global path/value pairs.
+status-to-global/static-route.py — XCESP-ON-RTR
+Maps RtrStaticRoute object status to global path/value pairs.
 """
 
 
@@ -9,7 +9,7 @@ def run(data):
     result = []
     for obj in data.get("objects", []):
         path = (obj.get("node_path")
-                or f"{obj.get('node_type','vrf')}/{obj.get('node_instance','?')}")
+                or f"{obj.get('node_type','static-route')}/{obj.get('node_instance','?')}")
         result.append({"path": f"{path}/oper-status",
                         "value": obj.get("oper_status", "LLD")})
     return result

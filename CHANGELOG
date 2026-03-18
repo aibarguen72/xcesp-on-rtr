@@ -1,5 +1,35 @@
 # Changelog - xcesp-on-rtr
 
+## 0.0.2
+
+- Complete schema redesign: hierarchical `router > vrf > {interface, vlan,
+  static-route}` with `address` child nodes for multi-address support
+- `_types.schema`: custom types — vlan-id, ip4-prefix, ip4-host, metric-val,
+  table-id
+- Replaced flat stubs: `vrf.schema`, `interface.schema`, `route.schema` →
+  full definitions + new `router.schema`, `vlan.schema`, `static-route.schema`,
+  `address.schema`
+- Config-to-objects rules: `router.py`, `vrf.py`, `interface.py`, `vlan.py`,
+  `static-route.py` — full implementations producing RtrXxx object INI sections
+- Status-to-global rules: all five node types emit `oper-status`; interface and
+  vlan also emit `link-state`
+- `IpCmd` helper class: thin wrapper for iproute2 `ip` commands via
+  `popen()`/`system()`; `parseOperstate()` for JSON link output
+- `RtrCommon.h`: shared `RtrOperStatus` enum, `parseNsVrf()`, `splitCsv()`,
+  `operStatusStr()`
+- Five ProcObjects (all follow IDLE→ACTIVE pattern, monitor every 5 ticks):
+  - `RtrRouterPObj`: Linux network namespace create/monitor
+  - `RtrVrfPObj`: Linux VRF device create/monitor; auto-assigns routing table
+    from VRF name hash if `TABLE` not specified
+  - `RtrInterfacePObj`: physical device config — namespace move, VRF binding,
+    IP addresses, link state; LOS/MAJOR alarm on link-down when not shutdown
+  - `RtrVlanPObj`: 802.1Q subinterface create/config; same LOS alarm logic
+  - `RtrStaticRoutePObj`: static IPv4 route add/remove; re-adds if externally
+    removed; VRF_TABLE key for VRF-aware routing
+- `OnRtrRegister.cpp`: registers all 5 types via REGISTER_PROC_OBJECT
+- `makefile`: added `src/objects/` compilation; fixed XCESPPROC path to
+  `../xcespproc`; added `-I $(SRCDIR) -I $(SRCDIR)/objects` include paths
+
 ## 0.0.1
 
 - Initial skeleton: project structure, schema stubs (interface/route/vrf),

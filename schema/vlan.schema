@@ -1,0 +1,13 @@
+# XCESP-ON-RTR — vlan node (802.1Q VLAN subinterface)
+#
+# Creates a VLAN subinterface on top of the named parent interface.
+# "interface" must reference an interface defined in the same vrf block.
+# In shutdown, the VLAN device is not created (planned only).
+
+node vlan
+  attr name       string   required
+  attr interface  string   required
+  attr vlanid     vlan-id  required
+  attr shutdown   bool     optional   default=false
+  child address   optional multi=true
+!

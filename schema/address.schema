@@ -1,0 +1,9 @@
+# XCESP-ON-RTR — address child node
+#
+# Represents a single IPv4 address with prefix length assigned to a
+# parent interface or vlan.  The instance name IS the address (e.g.
+# "address 10.10.10.10/24").  No additional attributes are needed.
+
+node address
+  attr name  ip4-prefix  required
+!

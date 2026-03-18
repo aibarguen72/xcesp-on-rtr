@@ -1,0 +1,12 @@
+# XCESP-ON-RTR — static-route node (IPv4 static routing entry)
+#
+# Adds a static IPv4 route to the VRF routing table.
+# In shutdown, the route is removed (or not added).
+
+node static-route
+  attr name      string     required
+  attr network   ip4-prefix required
+  attr next-hop  ip4-host   required
+  attr metric    metric-val optional   default=1
+  attr shutdown  bool       optional   default=false
+!

@@ -1,20 +1,26 @@
 /**
  * @file    RtrInterfacePObj.h
- * @brief   RtrInterfacePObj — physical/logical network interface object
+ * @brief   RtrInterfacePObj — network interface management (device or loopback)
  * @project xcesp-on-rtr
  * @date    2026-03-18
  *
- * Manages an existing Linux network device within a namespace/VRF.
- * The device must already exist; it cannot be created.
+ * Two interface types are supported via the IFACE_TYPE INI key:
  *
- * "shutdown" controls administrative link state (up/down).
- * The object is always deployed — even in shutdown — so it can
- * report the device's presence and set the link state.
+ *   device   (default) — manages an already-existing Linux network device.
+ *                        The device is never created or deleted.
+ *                        IP addresses are synchronised exactly (add missing,
+ *                        remove extra).
+ *
+ *   loopback           — manages a loopback-style software interface.
+ *                        If DEVICE == "lo" the standard kernel loopback is used.
+ *                        Any other name is treated as a dummy interface that is
+ *                        created on demand (`ip link add <dev> type dummy`).
+ *                        IP addresses are synchronised exactly.
  *
  * OperStatus:
- *   UP   — device found, link is operationally UP
- *   DOWN — device found, link is operationally DOWN
- *   LLD  — device not found or command failed
+ *   UP   — device found and operationally UP (or UNKNOWN for loopback)
+ *   DOWN — device found but operationally DOWN
+ *   LLD  — device not found or a command failed
  *
  * Alarm: LOS / MAJOR — raised when shutdown=false and link goes DOWN.
  *                       Cleared when link comes back UP.
@@ -29,10 +35,13 @@
 #include "ProcObject.h"
 #include "RtrCommon.h"
 
+enum class IfaceType { DEVICE, LOOPBACK };
+
 struct RtrInterfaceConfig {
     std::string              nsName;
     std::string              vrfName;
     std::string              device;
+    IfaceType                ifaceType = IfaceType::DEVICE;
     std::vector<std::string> addresses;
     bool                     shutdown = false;
 };
@@ -67,6 +76,9 @@ private:
     static constexpr int MONITOR_INTERVAL = 5;
 
     void applyConfig();
+    void applyDevice();
+    void applyLoopback();
+    void syncAddresses(const std::string& nsPrefix, const std::string& dev);
     void monitorLinkState();
     void updateLinkStatus(const std::string& operstate);
 };

@@ -13,6 +13,7 @@
 #define IPCMD_H
 
 #include <string>
+#include <vector>
 
 class IpCmd {
 public:
@@ -46,6 +47,14 @@ public:
      * Returns empty string if not found.
      */
     static std::string parseOperstate(const std::string& json);
+
+    /**
+     * @brief  Parse IPv4 addresses from `ip addr show dev <dev>` text output.
+     *
+     * Returns a list of "address/prefixlen" strings (e.g. "10.0.0.1/24")
+     * for every inet (IPv4) address assigned to the device.
+     */
+    static std::vector<std::string> parseAddrList(const std::string& addrShow);
 };
 
 #endif // IPCMD_H

@@ -8,6 +8,7 @@
 node interface
   attr name      string   required
   attr device    string   required
+  attr type      string   optional   default=device
   attr shutdown  bool     optional   default=false
   child address  optional multi=true
 !

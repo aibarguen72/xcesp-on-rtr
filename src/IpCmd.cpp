@@ -10,6 +10,7 @@
 #include <array>
 #include <cstdio>
 #include <cstdlib>
+#include <sstream>
 
 std::string IpCmd::ns(const std::string& nsName)
 {
@@ -52,4 +53,30 @@ std::string IpCmd::parseOperstate(const std::string& json)
     if (end == std::string::npos)
         return "";
     return json.substr(pos, end - pos);
+}
+
+std::vector<std::string> IpCmd::parseAddrList(const std::string& addrShow)
+{
+    // Parse lines of `ip addr show dev <dev>` text output.
+    // Lines containing "    inet " (not "inet6 ") carry IPv4 addresses.
+    // The address token immediately follows "inet " and ends at the next space.
+    std::vector<std::string> result;
+    std::istringstream ss(addrShow);
+    std::string line;
+    while (std::getline(ss, line)) {
+        auto pos = line.find("inet ");
+        if (pos == std::string::npos)
+            continue;
+        // Skip IPv6 lines: "inet6 " has '6' at pos+4, not ' '
+        if (pos + 4 < line.size() && line[pos + 4] == '6')
+            continue;
+        pos += 5; // skip "inet "
+        auto end = line.find(' ', pos);
+        if (end == std::string::npos)
+            end = line.size();
+        std::string addr = line.substr(pos, end - pos);
+        if (!addr.empty())
+            result.push_back(addr);
+    }
+    return result;
 }

@@ -1,5 +1,20 @@
 # Changelog - xcesp-on-rtr
 
+## 0.0.3
+
+- `interface` schema: new `type` attribute (`device` | `loopback`, default `device`)
+- `device` type: existing behaviour — check device exists, sync IP addresses
+  exactly (add missing, remove extra); never creates or deletes the device
+- `loopback` type: `lo` uses the standard kernel loopback; any other name
+  creates a `dummy` interface on demand and recreates it if externally removed
+- `IpCmd::parseAddrList()`: parses `ip addr show` text output → IPv4
+  address/prefix list used by the exact-match address sync
+- `syncAddresses()`: shared helper for both interface types — removes surplus
+  addresses then adds missing ones
+- Dummy/`lo` operstate `UNKNOWN` treated as `UP` (loopback interfaces never
+  report carrier-level `UP`)
+- `IFACE_TYPE` INI key threaded through config-to-objects rule and `loadConfig()`
+
 ## 0.0.2
 
 - Complete schema redesign: hierarchical `router > vrf > {interface, vlan,
